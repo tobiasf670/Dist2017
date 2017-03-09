@@ -90,6 +90,7 @@ public class GalgelegKlient{
 	    }
 	    
 	    while (!spil.erSpilletSlut()){
+                
 	    	System.out.println("Gæt et bogstav!");
 	    	String bogstav = scan.next();
 	    	if(bogstav.length() > 1){
@@ -107,6 +108,7 @@ public class GalgelegKlient{
 		
 	    	
 	    }
+            spil.erSpilletVundet();
 	    System.out.println("Spillet er slut! \n Prøv igen Y/N?"); 
 	    String nus = scan.next();
 	    if (nus.equalsIgnoreCase("Y")){

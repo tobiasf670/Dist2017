@@ -19,6 +19,9 @@ import javax.jws.WebService;
 
 import brugerautorisation.data.Bruger;
 import brugerautorisation.transport.rmi.Brugeradmin;
+import java.io.FileReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
@@ -63,11 +66,21 @@ public class GalgelogikImpl implements GalgeISOAP {
 
   public boolean erSpilletVundet() {
 	  if(spilletErVundet){
+              
+             
 		File file = new File("highscores.txt");
+                if(!file.exists())
+                try {
+                    file.createNewFile();
+                } catch (IOException ex) {
+                    Logger.getLogger(GalgelogikImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
 		try {
 			PrintWriter writer = new PrintWriter(file, "UTF-8");
 			writer.append(currentUser + " vandt spillet med " + getAntalForkerteBogstaver() + " forkerte bogstaver. \n");
-		} catch (Exception e) {
+                        
+                        writer.close();
+                } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -122,6 +135,7 @@ public class GalgelogikImpl implements GalgeISOAP {
 
   public void gætBogstav(String bogstav) {
     if (bogstav.length() != 1) return;
+    System.out.println("ordet er " +ordet);
     System.out.println("Der gættes på bogstavet: " + bogstav);
     if (brugteBogstaver.contains(bogstav)) return;
     if (spilletErVundet || spilletErTabt) return;
@@ -271,7 +285,7 @@ public Bruger hentBruger(String user, String pass) throws Exception {
     
     
     @Override
-	public String getHighscore() {
+	public String getHighscore() throws Exception{
 		File file = new File("highscores.txt");
 		try {
 			PrintWriter writer = new PrintWriter(file, "UTF-8");
@@ -280,8 +294,13 @@ public Bruger hentBruger(String user, String pass) throws Exception {
 			e.printStackTrace();
 		}
 		
+		BufferedReader br = new BufferedReader(new FileReader(file));
+                String st = "";
+                String outPut = "";
+                while(( st= br.readLine()) != null ){
+                  outPut +=st;
+                }
 		
-		
-		return null;
+		return outPut;
 	}
 }
