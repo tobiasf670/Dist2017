@@ -20,6 +20,7 @@ import javax.jws.WebService;
 import brugerautorisation.data.Bruger;
 import brugerautorisation.transport.rmi.Brugeradmin;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.client.Client;
@@ -76,7 +77,7 @@ public class GalgelogikImpl implements GalgeISOAP {
                     Logger.getLogger(GalgelogikImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
 		try {
-			PrintWriter writer = new PrintWriter(file, "UTF-8");
+			PrintWriter writer = new PrintWriter(new FileWriter(file,true));
 			writer.append(currentUser + " vandt spillet med " + getAntalForkerteBogstaver() + " forkerte bogstaver. \n");
                         
                         writer.close();
