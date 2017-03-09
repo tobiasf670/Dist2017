@@ -286,21 +286,20 @@ public Bruger hentBruger(String user, String pass) throws Exception {
     
     @Override
 	public String getHighscore() throws Exception{
-		File file = new File("highscores.txt");
-		try {
-			PrintWriter writer = new PrintWriter(file, "UTF-8");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-		BufferedReader br = new BufferedReader(new FileReader(file));
+		
+		BufferedReader br = new BufferedReader(new FileReader("highscores.txt"));
                 String st = "";
                 String outPut = "";
                 while(( st= br.readLine()) != null ){
                   outPut +=st;
                 }
-		
-		return outPut;
+		if (outPut.equals("")){
+		return "ingen highscore fundet";
+		}
+		else{
+			return outPut;
+			
+		}
 	}
 }

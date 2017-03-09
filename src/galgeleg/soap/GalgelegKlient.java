@@ -77,7 +77,12 @@ public class GalgelegKlient{
 	  
 	  spil = face;
         
-	 
+	 try {
+		System.out.println(face.getHighscore());
+	} catch (Exception e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
     
 	  System.out.println("Nyt Spil Startet");
 	  
@@ -92,6 +97,7 @@ public class GalgelegKlient{
 	    while (!spil.erSpilletSlut()){
                 
 	    	System.out.println("Gæt et bogstav!");
+	    	
 	    	String bogstav = scan.next();
 	    	if(bogstav.length() > 1){
 	    		System.out.println("Du må kun gæte et bogstav ad gangen! Det første bogstav, du skrev bruges i stedet.");
