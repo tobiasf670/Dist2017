@@ -1,10 +1,11 @@
 package galgeleg.soap;
 
 import java.io.BufferedReader;
-
-
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -37,6 +38,7 @@ public class GalgelogikImpl implements GalgeISOAP {
   private boolean sidsteBogstavVarKorrekt;
   private boolean spilletErVundet;
   private boolean spilletErTabt;
+  private String currentUser;
 
 
   public ArrayList<String> getBrugteBogstaver() {
@@ -60,6 +62,16 @@ public class GalgelogikImpl implements GalgeISOAP {
   }
 
   public boolean erSpilletVundet() {
+	  if(spilletErVundet){
+		File file = new File("highscores.txt");
+		try {
+			PrintWriter writer = new PrintWriter(file, "UTF-8");
+			writer.append(currentUser + " vandt spillet med " + getAntalForkerteBogstaver() + " forkerte bogstaver. \n");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	  }
     return spilletErVundet;
   }
 
@@ -204,11 +216,20 @@ public Bruger hentBruger(String user, String pass) throws Exception {
     //ba.sendGlemtAdgangskodeEmail("jacno", "Dette er en test, husk at skifte kode");
 		//ba.ændrAdgangskode("jacno", "kodenj4gvs", "xxx");
 		Bruger b = ba.hentBruger(user, pass);
+		
+		if (b.brugernavn != null){
+			currentUser = b.brugernavn;
+		}
 		return b;
 }
 
     @Override
     public void hentOrdFraDrRest() { 
+
+    	
+    	
+    	
+    	
 //    Client client = ClientBuilder.newClient();
 //     Response res = client.target("http://www.dr.dk/mu-online/api/1.3/list/view/mostviewed?channel=drtv&channeltype=TV&limit=3&offset=0")
 //              .request(MediaType.APPLICATION_JSON).get();
@@ -245,4 +266,22 @@ public Bruger hentBruger(String user, String pass) throws Exception {
         muligeOrd.addAll(new HashSet<String>(Arrays.asList(ordDR.getOrdDr())));
         nulstil();
         }
+
+	
+    
+    
+    @Override
+	public String getHighscore() {
+		File file = new File("highscores.txt");
+		try {
+			PrintWriter writer = new PrintWriter(file, "UTF-8");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		return null;
+	}
 }

@@ -26,6 +26,6 @@ public interface GalgeISOAP {
 	@WebMethod String hentUrl(String s) throws Exception; 
 	@WebMethod void hentOrdFraDr() throws Exception;
 	@WebMethod Bruger hentBruger(String user, String pass) throws Exception;
-        @WebMethod public void hentOrdFraDrRest();
-
+    @WebMethod public void hentOrdFraDrRest();
+    @WebMethod String getHighscore();
 }
