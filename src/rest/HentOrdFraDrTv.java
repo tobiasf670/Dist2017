@@ -26,7 +26,8 @@ public class HentOrdFraDrTv {
       
         
         Client client = ClientBuilder.newClient();
-     Response res = client.target("http://www.dr.dk/mu-online/api/1.3/list/view/mostviewed?channel=drtv&channeltype=TV&limit=3&offset=0")
+     Response res = client.target("http://www.dr.dk/mu-online/api/1.3/list/view/mostviewed?"
+             + "channel=drtv&channeltype=TV&limit=3&offset=0")
               .request(MediaType.APPLICATION_JSON).get();
      
     

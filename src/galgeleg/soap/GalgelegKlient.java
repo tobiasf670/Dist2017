@@ -35,7 +35,7 @@ public class GalgelegKlient{
 	  boolean legitUser = false;
 	  
 	  URL url = new URL("http://ec2-35-165-42-120.us-west-2.compute.amazonaws.com:9901/galgeSOAP?wsdl");
-         //URL url = new URL("http://localhost:9901/galgeSOAP?wsdl");
+        // URL url = new URL("http://localhost:9901/galgeSOAP?wsdl");
 	  
 	  QName qname = new QName("http://soap.galgeleg/", "GalgelogikImplService");
 	  Service service = Service.create(url, qname);
@@ -66,6 +66,7 @@ public class GalgelegKlient{
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+                
 	}
 	  
 	  
@@ -121,6 +122,7 @@ public class GalgelegKlient{
             System.out.println("Spillet er tabt og ordet var : "+spil.getOrdet());
             }
             System.out.println("Spillet er slut! \n Prøv igen Y/N?");
+          
 	    String nus = scan.next();
 	    if (nus.equalsIgnoreCase("Y")){
 	    	return true;

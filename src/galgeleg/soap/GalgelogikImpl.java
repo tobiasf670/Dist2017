@@ -34,168 +34,197 @@ import rest.HentOrdFraDrTv;
 
 @WebService(endpointInterface = "galgeleg.soap.GalgeISOAP")
 public class GalgelogikImpl implements GalgeISOAP {
-  private ArrayList<String> muligeOrd = new ArrayList<String>();
-  private String ordet;
-  private ArrayList<String> brugteBogstaver = new ArrayList<String>();
-  private String synligtOrd;
-  private int antalForkerteBogstaver;
-  private boolean sidsteBogstavVarKorrekt;
-  private boolean spilletErVundet;
-  private boolean spilletErTabt;
-  private String currentUser;
 
+    private ArrayList<String> muligeOrd = new ArrayList<String>();
+    private String ordet;
+    private ArrayList<String> brugteBogstaver = new ArrayList<String>();
+    private String synligtOrd;
+    private int antalForkerteBogstaver;
+    private boolean sidsteBogstavVarKorrekt;
+    private boolean spilletErVundet;
+    private boolean spilletErTabt;
+    private String currentUser;
+    private JSONObject json = new JSONObject();
+    private JSONArray jsonA = new JSONArray();
 
-  public ArrayList<String> getBrugteBogstaver() {
-    return brugteBogstaver;
-  }
+    public ArrayList<String> getBrugteBogstaver() {
+        return brugteBogstaver;
+    }
 
-  public String getSynligtOrd() {
-    return synligtOrd;
-  }
+    public String getSynligtOrd() {
+        return synligtOrd;
+    }
 
-  public String getOrdet() {
-    return ordet;
-  }
+    public String getOrdet() {
+        return ordet;
+    }
 
-  public int getAntalForkerteBogstaver() {
-    return antalForkerteBogstaver;
-  }
+    public int getAntalForkerteBogstaver() {
+        return antalForkerteBogstaver;
+    }
 
-  public boolean erSidsteBogstavKorrekt() {
-    return sidsteBogstavVarKorrekt;
-  }
+    public boolean erSidsteBogstavKorrekt() {
+        return sidsteBogstavVarKorrekt;
+    }
 
-  public boolean erSpilletVundet() {
-	  if(spilletErVundet){
-              
-             
-		File file = new File("highscores.txt");
-                if(!file.exists())
+    public boolean erSpilletVundet() {
+        if (spilletErVundet) {
+
+            JSONArray jsonArr = new JSONArray();
+            File file = new File("highscores.txt");
+            if (!file.exists()) {
                 try {
                     file.createNewFile();
                 } catch (IOException ex) {
                     Logger.getLogger(GalgelogikImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
-		try {
-			PrintWriter writer = new PrintWriter(new FileWriter(file,true));
-			writer.append(currentUser + " vandt spillet med " + getAntalForkerteBogstaver() + " forkerte bogstaver. \n");
-                        
-                        writer.close();
-                } catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	  }
-    return spilletErVundet;
-  }
+            } else {
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader("highscores.txt"));
+                    String s = br.readLine();
+                    if(s!= null){
+                    jsonArr = new JSONArray(s);
+                    }
+                } catch (JSONException ex) {
+                    Logger.getLogger(GalgelogikImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(GalgelogikImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-  public boolean erSpilletTabt() {
-    return spilletErTabt;
-  }
+            }
+            try {
+                PrintWriter writer = new PrintWriter(new FileWriter(file, false));
+                //writer.append(currentUser + " vandt spillet med " + getAntalForkerteBogstaver() + " forkerte bogstaver. \n");
 
-  public boolean erSpilletSlut() {
-    return spilletErTabt || spilletErVundet;
-  }
+                json.put("Name", currentUser);
+                json.put("Score", getAntalForkerteBogstaver());
 
+                jsonArr.put(json);
+               
 
-  public GalgelogikImpl() throws java.rmi.RemoteException{
-    muligeOrd.add("bil");
-    muligeOrd.add("computer");
-    muligeOrd.add("programmering");
-    muligeOrd.add("motorvej");
-    muligeOrd.add("busrute");
-    muligeOrd.add("gangsti");
-    muligeOrd.add("skovsnegl");
-    muligeOrd.add("solsort");
-    nulstil();
-  }
+                writer.write(jsonArr.toString());
 
-  public void nulstil() {
-    brugteBogstaver.clear();
-    antalForkerteBogstaver = 0;
-    spilletErVundet = false;
-    spilletErTabt = false;
-    ordet = muligeOrd.get(new Random().nextInt(muligeOrd.size()));
-    opdaterSynligtOrd();
-  }
+                writer.close();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return spilletErVundet;
+    }
 
+    public boolean erSpilletTabt() {
+        return spilletErTabt;
+    }
 
-  public void opdaterSynligtOrd() {
-    synligtOrd = "";
-    spilletErVundet = true;
-    for (int n = 0; n < ordet.length(); n++) {
-      String bogstav = ordet.substring(n, n + 1);
-      if (brugteBogstaver.contains(bogstav)) {
-        synligtOrd = synligtOrd + bogstav;
-      } else {
-        synligtOrd = synligtOrd + "*";
+    public boolean erSpilletSlut() {
+        return spilletErTabt || spilletErVundet;
+    }
+
+    public GalgelogikImpl() throws java.rmi.RemoteException {
+        muligeOrd.add("bil");
+        muligeOrd.add("computer");
+        muligeOrd.add("programmering");
+        muligeOrd.add("motorvej");
+        muligeOrd.add("busrute");
+        muligeOrd.add("gangsti");
+        muligeOrd.add("skovsnegl");
+        muligeOrd.add("solsort");
+        nulstil();
+    }
+
+    public void nulstil() {
+        brugteBogstaver.clear();
+        antalForkerteBogstaver = 0;
         spilletErVundet = false;
-      }
+        spilletErTabt = false;
+        ordet = muligeOrd.get(new Random().nextInt(muligeOrd.size()));
+        opdaterSynligtOrd();
     }
-  }
 
-  public void gætBogstav(String bogstav) {
-    if (bogstav.length() != 1) return;
-    System.out.println("ordet er " +ordet);
-    System.out.println("Der gættes på bogstavet: " + bogstav);
-    if (brugteBogstaver.contains(bogstav)) return;
-    if (spilletErVundet || spilletErTabt) return;
-
-    brugteBogstaver.add(bogstav);
-
-    if (ordet.contains(bogstav)) {
-      sidsteBogstavVarKorrekt = true;
-      System.out.println("Bogstavet var korrekt: " + bogstav);
-    } else {
-      // Vi gættede på et bogstav der ikke var i ordet.
-      sidsteBogstavVarKorrekt = false;
-      System.out.println("Bogstavet var IKKE korrekt: " + bogstav);
-      antalForkerteBogstaver = antalForkerteBogstaver + 1;
-      if (antalForkerteBogstaver > 6) {
-        spilletErTabt = true;
-      }
+    public void opdaterSynligtOrd() {
+        synligtOrd = "";
+        spilletErVundet = true;
+        for (int n = 0; n < ordet.length(); n++) {
+            String bogstav = ordet.substring(n, n + 1);
+            if (brugteBogstaver.contains(bogstav)) {
+                synligtOrd = synligtOrd + bogstav;
+            } else {
+                synligtOrd = synligtOrd + "*";
+                spilletErVundet = false;
+            }
+        }
     }
-    opdaterSynligtOrd();
-  }
 
-  public void logStatus() {
-    System.out.println("---------- ");
-    System.out.println("- ordet (skult) = " + ordet);
-    System.out.println("- synligtOrd = " + synligtOrd);
-    System.out.println("- forkerteBogstaver = " + antalForkerteBogstaver);
-    System.out.println("- brugeBogstaver = " + brugteBogstaver);
-    if (spilletErTabt) System.out.println("- SPILLET ER TABT");
-    if (spilletErVundet) System.out.println("- SPILLET ER VUNDET");
-    System.out.println("---------- ");
-  }
+    public void gætBogstav(String bogstav) {
+        if (bogstav.length() != 1) {
+            return;
+        }
+        System.out.println("ordet er " + ordet);
+        System.out.println("Der gættes på bogstavet: " + bogstav);
+        if (brugteBogstaver.contains(bogstav)) {
+            return;
+        }
+        if (spilletErVundet || spilletErTabt) {
+            return;
+        }
 
+        brugteBogstaver.add(bogstav);
 
-  public String hentUrl(String url) throws Exception {
-    BufferedReader br = new BufferedReader(new InputStreamReader(new URL(url).openStream()));
-    StringBuilder sb = new StringBuilder();
-    String linje = br.readLine();
-    while (linje != null) {
-      sb.append(linje + "\n");
-      linje = br.readLine();
+        if (ordet.contains(bogstav)) {
+            sidsteBogstavVarKorrekt = true;
+            System.out.println("Bogstavet var korrekt: " + bogstav);
+        } else {
+            // Vi gættede på et bogstav der ikke var i ordet.
+            sidsteBogstavVarKorrekt = false;
+            System.out.println("Bogstavet var IKKE korrekt: " + bogstav);
+            antalForkerteBogstaver = antalForkerteBogstaver + 1;
+            if (antalForkerteBogstaver > 6) {
+                spilletErTabt = true;
+            }
+        }
+        opdaterSynligtOrd();
     }
-    return sb.toString();
-  }
 
-  public void hentOrdFraDr() throws Exception{
-  String data = hentUrl("http://dr.dk");
-    System.out.println("data = " + data);
+    public void logStatus() {
+        System.out.println("---------- ");
+        System.out.println("- ordet (skult) = " + ordet);
+        System.out.println("- synligtOrd = " + synligtOrd);
+        System.out.println("- forkerteBogstaver = " + antalForkerteBogstaver);
+        System.out.println("- brugeBogstaver = " + brugteBogstaver);
+        if (spilletErTabt) {
+            System.out.println("- SPILLET ER TABT");
+        }
+        if (spilletErVundet) {
+            System.out.println("- SPILLET ER VUNDET");
+        }
+        System.out.println("---------- ");
+    }
 
-    data = data.replaceAll("<.+?>", " ").toLowerCase().replaceAll("[^a-zæøå]", " ");
-    System.out.println("data = " + data);
-    muligeOrd.clear();
-    muligeOrd.addAll(new HashSet<String>(Arrays.asList(data.split(" "))));
+    public String hentUrl(String url) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(new URL(url).openStream()));
+        StringBuilder sb = new StringBuilder();
+        String linje = br.readLine();
+        while (linje != null) {
+            sb.append(linje + "\n");
+            linje = br.readLine();
+        }
+        return sb.toString();
+    }
 
-    System.out.println("muligeOrd = " + muligeOrd);
-    nulstil();
-  }
-  
-  
-  
+    public void hentOrdFraDr() throws Exception {
+        String data = hentUrl("http://dr.dk");
+        System.out.println("data = " + data);
+
+        data = data.replaceAll("<.+?>", " ").toLowerCase().replaceAll("[^a-zæøå]", " ");
+        System.out.println("data = " + data);
+        muligeOrd.clear();
+        muligeOrd.addAll(new HashSet<String>(Arrays.asList(data.split(" "))));
+
+        System.out.println("muligeOrd = " + muligeOrd);
+        nulstil();
+    }
+
 //  public void hentOrdFraDrRest(){
 //     
 //     Client client = ClientBuilder.newClient();
@@ -223,28 +252,23 @@ public class GalgelogikImpl implements GalgeISOAP {
 //    e.printStackTrace();
 //  }
 //  }
+    @Override
+    public Bruger hentBruger(String user, String pass) throws Exception {
+        Brugeradmin ba = (Brugeradmin) Naming.lookup("rmi://javabog.dk/brugeradmin");
 
-@Override
-public Bruger hentBruger(String user, String pass) throws Exception {
-	Brugeradmin ba = (Brugeradmin) Naming.lookup("rmi://javabog.dk/brugeradmin");
+        //ba.sendGlemtAdgangskodeEmail("jacno", "Dette er en test, husk at skifte kode");
+        //ba.ændrAdgangskode("jacno", "kodenj4gvs", "xxx");
+        Bruger b = ba.hentBruger(user, pass);
 
-    //ba.sendGlemtAdgangskodeEmail("jacno", "Dette er en test, husk at skifte kode");
-		//ba.ændrAdgangskode("jacno", "kodenj4gvs", "xxx");
-		Bruger b = ba.hentBruger(user, pass);
-		
-		if (b.brugernavn != null){
-			currentUser = b.brugernavn;
-		}
-		return b;
-}
+        if (b.brugernavn != null) {
+            currentUser = b.brugernavn;
+        }
+        return b;
+    }
 
     @Override
-    public void hentOrdFraDrRest() { 
+    public void hentOrdFraDrRest() {
 
-    	
-    	
-    	
-    	
 //    Client client = ClientBuilder.newClient();
 //     Response res = client.target("http://www.dr.dk/mu-online/api/1.3/list/view/mostviewed?channel=drtv&channeltype=TV&limit=3&offset=0")
 //              .request(MediaType.APPLICATION_JSON).get();
@@ -275,32 +299,29 @@ public Bruger hentBruger(String user, String pass) throws Exception {
 //          } catch (Exception e) {
 //    e.printStackTrace();
 //  }
-        
         HentOrdFraDrTv ordDR = new HentOrdFraDrTv();
         muligeOrd.clear();
         muligeOrd.addAll(new HashSet<String>(Arrays.asList(ordDR.getOrdDr())));
         nulstil();
-        }
+    }
 
-	
-    
-    
     @Override
-	public String getHighscore() throws Exception{
-		
-		
-		BufferedReader br = new BufferedReader(new FileReader("highscores.txt"));
-                String st = "";
-                String outPut = "";
-                while(( st= br.readLine()) != null ){
-                  outPut +=st;
-                }
-		if (outPut.equals("")){
-		return "ingen highscore fundet";
-		}
-		else{
-			return outPut;
-			
-		}
-	}
+    public String getHighscore() throws Exception {
+
+        BufferedReader br = new BufferedReader(new FileReader("highscores.txt"));
+        String st = "";
+        String outPut = "";
+
+        while ((st = br.readLine()) != null) {
+
+            outPut += st;
+        }
+        if (outPut.equals("")) {
+            return null;
+        } else {
+
+            return outPut;
+
+        }
+    }
 }

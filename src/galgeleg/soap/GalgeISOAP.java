@@ -7,6 +7,8 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 
 import brugerautorisation.data.Bruger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 @WebService
 public interface GalgeISOAP {
 	
